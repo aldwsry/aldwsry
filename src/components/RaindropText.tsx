@@ -1,7 +1,7 @@
 import { useRef, useMemo, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
-import { CONTENT } from '../data/content';
+import { content } from '../data/content';
 import * as THREE from 'three';
 
 interface RaindropTextProps {
@@ -18,7 +18,7 @@ export function RaindropText({ }: RaindropTextProps) {
     // We add spacing between sections
     const allLines = useMemo(() => {
         const lines: { text: string; isTitle: boolean; id: string }[] = [];
-        CONTENT.forEach((section, sIdx) => {
+        content.forEach((section, sIdx) => {
             const sectionLines = section.text.split('\n');
             sectionLines.forEach((line, lIdx) => {
                 lines.push({

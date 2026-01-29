@@ -1,15 +1,15 @@
 import { useState, useCallback } from 'react';
 import { Scene } from './components/Scene';
-import { CONTENT, getMoodParams } from './data/content';
+import { content, getMoodParams } from './data/content';
 
 function App() {
     const [currentSection, setCurrentSection] = useState(0);
-    const content = CONTENT[currentSection];
-    const currentMood = getMoodParams(content.type === 'title' ? 'title' : content.mood);
+    const currentContent = content[currentSection];
+    const currentMood = getMoodParams(currentContent.type === 'title' ? 'title' : currentContent.mood);
 
     // When ripple completes, advance to next section
     const handleRippleComplete = useCallback(() => {
-        setCurrentSection(prev => (prev + 1) % CONTENT.length);
+        setCurrentSection(prev => (prev + 1) % content.length);
     }, []);
 
     return (
