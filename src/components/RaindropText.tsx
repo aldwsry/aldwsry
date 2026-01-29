@@ -1,5 +1,5 @@
 import { useRef, useMemo, useState } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import { CONTENT } from '../data/content';
 import * as THREE from 'three';
@@ -13,7 +13,6 @@ interface RaindropTextProps {
 
 export function RaindropText({ }: RaindropTextProps) {
     const groupRef = useRef<THREE.Group>(null);
-    const { viewport } = useThree();
 
     // Flatten all lines into a single list for scrolling
     // We add spacing between sections
@@ -49,7 +48,7 @@ export function RaindropText({ }: RaindropTextProps) {
     // State to track scroll
     const [yPos, setYPos] = useState(startY);
 
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
         // Move text up
         setYPos(prev => {
             let next = prev + SCROLL_SPEED * delta;
@@ -60,13 +59,7 @@ export function RaindropText({ }: RaindropTextProps) {
             // Bottom of text block is (next - totalHeight)
             // We want to reset when the *bottom* of the text clears the *top* of the screen.
             // Actually, usually we reset when the bottom clears the screen + buffer.
-            const resetPoint = 30 + totalHeight;
-
-            // Wait, we want continuous loop? 
-            // Truly continuous requires cloning the text stack.
-            // For now, let's just loop the position back to startY when it finishes
-            // This leaves a gap, but works for "credits that loop".
-
+            // Loop functionality
             // If the *last line* has effectively scrolled off screen...
             // Position of first line is `next`.
             // Position of last line is `next - totalHeight`.

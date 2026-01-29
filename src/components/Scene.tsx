@@ -1,4 +1,3 @@
-import { useState, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Terrain } from './Terrain';
 import { RaindropText } from './RaindropText';
@@ -11,33 +10,17 @@ interface SceneProps {
     onRippleComplete: () => void;
 }
 
-interface RippleState {
-    x: number;
-    y: number;
-    radius: number;
-    active: boolean;
-}
-
 function SceneContent({ moodParams, currentSection, onRippleComplete }: SceneProps) {
-    const [ripple, setRipple] = useState<RippleState>({ x: 0, y: 0, radius: 0, active: false });
-
-    const handleRippleUpdate = useCallback((x: number, y: number, radius: number, active: boolean) => {
-        setRipple({ x, y, radius, active });
-    }, []);
-
     return (
         <>
             <Terrain
                 moodParams={moodParams}
-                rippleX={ripple.x}
-                rippleY={ripple.y}
-                rippleRadius={ripple.radius}
-                rippleActive={ripple.active}
             />
             <RaindropText
                 currentSection={currentSection}
                 onRippleComplete={onRippleComplete}
-                onRippleUpdate={handleRippleUpdate}
+                onRippleUpdate={() => { }} // No-op since we removed the handler but props might expect it? 
+            // Wait, RaindropText props defined onRippleUpdate.
             />
         </>
     );
