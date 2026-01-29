@@ -1,5 +1,5 @@
 import { useRef, useMemo, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import { content } from '../data/content';
 import * as THREE from 'three';
@@ -13,6 +13,15 @@ interface RaindropTextProps {
 
 export function RaindropText({ }: RaindropTextProps) {
     const groupRef = useRef<THREE.Group>(null);
+    const { viewport } = useThree();
+
+    // Responsive calculations
+    // Mobile check: viewport width < 15 (approximate threshold for typical mobile portrait in 3D units)
+    const isMobile = viewport.width < 15;
+
+    // Dynamic max width: constrain to 85% of viewport width
+    // But don't exceed 40 units on desktop
+    const maxWidth = Math.min(40, viewport.width * 0.85);
 
     // Flatten all lines into a single list for scrolling
     // We add spacing between sections
@@ -81,15 +90,22 @@ export function RaindropText({ }: RaindropTextProps) {
                 // Visible range roughly -30 to +30 vertically
                 if (lineY < -40 || lineY > 40) return null;
 
+                // Adjust font size based on screen size
+                const baseTitleSize = 1.5;
+                const baseTextSize = 0.8;
+
+                // Scale down slightly on mobile to fit more words per line before wrapping
+                const scaleFactor = isMobile ? 0.8 : 1.0;
+
                 return (
                     <Text
                         key={lineData.id}
                         position={[0, lineY, 0]}
-                        fontSize={lineData.isTitle ? 1.5 : 0.8}
+                        fontSize={lineData.isTitle ? baseTitleSize * scaleFactor : baseTextSize * scaleFactor}
                         color="white"
                         anchorX="center"
                         anchorY="middle"
-                        maxWidth={40}
+                        maxWidth={maxWidth}
                         textAlign="center"
                     // Using default font to ensure loading
                     >
